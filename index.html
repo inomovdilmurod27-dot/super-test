@@ -2,369 +2,319 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<title>Variantli Test + GTI va NS</title>
-
-<!-- Birinchi kod CSS va JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<title>Super Panel — Ko‘k-Yashil Zamonaviy Dizayn</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-body { font-family: Arial,sans-serif; background:#f4f6f8; margin:0; padding:20px; }
-.container { max-width:900px; margin:20px auto; background:white; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
-h2,h3 { text-align:center; }
-button { padding:10px 15px; margin:5px; cursor:pointer; border:none; border-radius:5px; background:#007bff; color:white; font-size:16px; }
-button:hover { background:#0056b3; }
-input, textarea { width:100%; padding:8px; margin:5px 0 15px 0; border-radius:5px; border:1px solid #ccc; }
-.hidden { display:none; }
-.question { margin-bottom:15px; }
-#timer { font-weight:bold; color:red; text-align:center; margin-bottom:15px; }
-label { display:block; margin:5px 0; }
-.questionBlock { margin-bottom:15px; background:#f9f9f9; padding:10px; border-radius:8px; }
-.optionText, .questionText { width: 100%; margin:5px 0; padding:5px; }
+body {
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    height:100vh;
+    background: linear-gradient(135deg, #1abc9c, #16a085);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+}
+.container {
+    width:500px;
+    padding:35px;
+    text-align:center;
+    border-radius:25px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(25px);
+    box-shadow:0 20px 60px rgba(0,0,0,0.4);
+    color:white;
+    animation: fadeIn 1s ease;
+}
+@keyframes fadeIn {from {opacity:0; transform:translateY(50px);} to {opacity:1; transform:translateY(0);} }
+h1 {font-size:36px; margin-bottom:40px; text-shadow:0 4px 12px rgba(0,0,0,0.5);}
+.btn {
+    width:100%;
+    padding:20px;
+    margin:12px 0;
+    border:none;
+    border-radius:18px;
+    font-size:20px;
+    cursor:pointer;
+    font-weight:700;
+    background: linear-gradient(45deg, #00c6ff, #0072ff);
+    color:white;
+    transition:0.4s;
+    box-shadow:0 6px 20px rgba(0,0,0,0.3);
+}
+.btn:hover {transform:scale(1.05); box-shadow:0 10px 30px rgba(0,0,0,0.5);}
+.btn i {margin-right:12px;}
+.modal {
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    backdrop-filter:blur(12px);
+    background: rgba(0,0,0,0.6);
+    justify-content:center;
+    align-items:center;
+    overflow:auto;
+}
+.modal-content {
+    background:white;
+    width:80%;
+    max-width:1200px;
+    min-height:80%;
+    border-radius:25px;
+    padding:35px;
+    text-align:center;
+    animation: pop 0.3s ease;
+    color:#333;
+    position:relative;
+    overflow:auto;
+}
+@keyframes pop {from {transform:scale(0.7); opacity:0;} to {transform:scale(1); opacity:1;} }
+input, select, textarea {
+    width:90%;
+    padding:12px;
+    font-size:16px;
+    margin-top:8px;
+    margin-bottom:12px;
+    border-radius:12px;
+    border:1px solid #aaa;
+    resize:none;
+}
+.modern-btn {
+    padding:12px 25px;
+    font-size:16px;
+    font-weight:600;
+    margin:8px 5px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    color:white;
+    transition:0.3s;
+}
+.login-btn {background: linear-gradient(135deg, #00c6ff, #0072ff);}
+.login-btn:hover {transform:scale(1.05); box-shadow:0 8px 25px rgba(0,0,0,0.4);}
+.logout-btn {background: linear-gradient(135deg, #1a73e8, #0a47a0);}
+.logout-btn:hover {transform:scale(1.05); box-shadow:0 8px 25px rgba(0,0,0,0.4);}
+.panel-box {
+    text-align:left;
+    background:#d1f2eb;
+    border-radius:14px;
+    padding:22px;
+    margin-top:20px;
+    max-height:600px;
+    overflow-y:auto;
+}
+.panel-box ul li {margin-bottom:10px;}
+.panel-box::-webkit-scrollbar {width:8px;}
+.panel-box::-webkit-scrollbar-thumb {background:#888;border-radius:10px;}
+.panel-box::-webkit-scrollbar-thumb:hover {background:#555;}
 </style>
 </head>
 <body>
 
-<!-- BIRINCHI KOD: Variantli Test -->
-<div class="container">
-<h2>O'qituvchi va Talaba Paneli</h2>
-
-<!-- Bosh Panel -->
-<div id="mainPanel">
-    <button onclick="showTeacherLogin()">O'qituvchi</button>
-    <button onclick="showStudentPanel()">Talaba</button>
+<div class="container" id="mainPanel">
+    <h1>Super Panel</h1>
+    <button class="btn" onclick="openModal('teacherModal')"><i class="fa-solid fa-chalkboard-user"></i> O‘qituvchi profili</button>
+    <button class="btn" onclick="openModal('studentModal')"><i class="fa-solid fa-user-graduate"></i> Talaba profili</button>
+    <button class="btn" onclick="openModal('testModal')"><i class="fa-solid fa-pen-to-square"></i> Test tayyorlash</button>
 </div>
 
-<!-- O'qituvchi Login -->
-<div id="teacherLogin" class="hidden">
-    <h3>O'qituvchi Login</h3>
-    <input type="text" id="teacherUsername" placeholder="Login">
-    <input type="password" id="teacherPassword" placeholder="Parol">
-    <button onclick="loginTeacher()">Kirish</button>
-    <button onclick="backToMain()">Ortga</button>
+<!-- O'qituvchi -->
+<div class="modal" id="teacherModal">
+    <div class="modal-content">
+        <h2>O‘qituvchi kirishi</h2>
+        <input type="password" id="password" placeholder="Parol" onkeydown="checkEnter(event)">
+        <div id="teacherButtons">
+            <button class="modern-btn login-btn" onclick="login()">Kirish</button>
+            <button class="modern-btn logout-btn" onclick="backToMain('teacherModal')">Orqaga</button>
+        </div>
+        <div class="panel-box" id="teacherPanel" style="display:none;">
+            <h3>Test yaratish</h3>
+            <label>Savollarni yozing (namuna format):</label><br>
+            <textarea id="questionsTextarea" rows="10" placeholder="++++Savol?
+====#to'g'ri javob
+====no to'g'ri javob
+++++Savol?"></textarea><br>
+            <div>
+                <label>Savollarni aralashtirish:</label><br>
+                <select id="shuffleQuestionsSelect"><option value="ha">Ha</option><option value="yoq">Yo‘q</option></select>
+            </div><br>
+            <div>
+                <label>Javoblarni aralashtirish:</label><br>
+                <select id="shuffleAnswersSelect"><option value="ha">Ha</option><option value="yoq">Yo‘q</option></select>
+            </div><br>
+            <div>
+                <label>Savollarni chiqarish tartibi:</label><br>
+                <select id="questionOrder"><option value="sequential">Ketma-ket</option><option value="random">Tasodifiy</option></select>
+            </div><br>
+            <div>
+                <label>Testda savol soni:</label><br>
+                <input type="number" id="questionCount" min="1" value="10">
+            </div><br>
+            <div>
+                <label>Test vaqti (minutda):</label><br>
+                <input type="number" id="testTime" min="1" value="30">
+            </div><br>
+            <button class="modern-btn login-btn" onclick="generateTestAndBack()">Testni yaratish</button>
+        </div>
+    </div>
 </div>
 
-<!-- O'qituvchi Paneli -->
-<div id="teacherPanel" class="hidden">
-    <h3>O'qituvchi Paneli</h3>
-
-    <!-- Word import -->
-    <input type="file" id="wordFile" accept=".docx">
-    <button onclick="importWord()">Worddan Savol Import</button>
-    <h4>Qo'shilgan savollar: <span id="questionCount">0</span></h4>
-    <div id="editableQuestions"></div>
-
-    <!-- Shuffle va Tanlash parametrlar -->
-    <label><input type="checkbox" id="shuffleQuestions"> Savollarni aralashtirish</label>
-    <label><input type="checkbox" id="shuffleAnswers"> Javoblarni aralashtirish</label>
-    <label>Test uchun savollar soni: <input type="number" id="quizSize" min="1" placeholder="Masalan: 30"> <input type="checkbox" id="randomSelect"> Tasodifiy tanlash</label>
-
-    <input type="text" id="telegramLink" placeholder="Telegram havolasi (masalan https://t.me/share/url?url=&text=)">
-    <input type="number" id="testDuration" placeholder="Test davomiyligi (daqiqa)">
-    <button onclick="saveQuestions()">Saqlash</button>
-    <button onclick="exportWord()">Wordga Yuklash</button>
-    <button onclick="backToMain()">Chiqish</button>
+<!-- Talaba -->
+<div class="modal" id="studentModal">
+    <div class="modal-content">
+        <h2>Talaba profili</h2>
+        <input type="text" id="studentName" placeholder="Ismingizni kiriting"><br>
+        <button class="modern-btn login-btn" onclick="startStudentTest()">Testni boshlash</button>
+        <div id="studentTestArea" style="margin-top:20px; display:none;"></div>
+        <button class="modern-btn logout-btn" onclick="backToMain('studentModal')">Orqaga</button>
+    </div>
 </div>
 
-<!-- Talaba Paneli -->
-<div id="studentPanel" class="hidden">
-    <h3>Talaba Paneli</h3>
-    <input type="text" id="studentName" placeholder="Ism Familya">
-    <button onclick="startTest()">Testni Boshlash</button>
-    <button onclick="backToMain()">Ortga</button>
-</div>
-
-<!-- Test Paneli -->
-<div id="testPanel" class="hidden">
-    <h3 id="welcomeStudent"></h3>
-    <p id="timer">Qolgan vaqt: 00:00</p>
-    <div id="questionsContainer"></div>
-    <button onclick="submitAnswers()">Javoblarni Yuborish</button>
-</div>
+<!-- Test -->
+<div class="modal" id="testModal">
+    <div class="modal-content">
+        <h2>Test tayyorlash</h2>
+        <div class="panel-box">
+            <ul>
+                <li>✅ Savollar qo‘shish</li>
+                <li>✅ Variantlar yaratish</li>
+                <li>✅ Word dan yuklash</li>
+                <li>✅ Testni PDF/Word ga eksport qilish</li>
+                <li>✅ Testni tahrirlash</li>
+            </ul>
+        </div>
+        <button class="modern-btn logout-btn" onclick="backToMain('testModal')">Orqaga</button>
+    </div>
 </div>
 
 <script>
-let quizData = [];
-let questions = [];
-let options = [];
-let correctAnswers = [];
-let telegramLink = "";
-let duration = 0;
-let timerInterval;
+const mainPanel = document.getElementById("mainPanel");
+const teacherPanel = document.getElementById("teacherPanel");
+let teacherLoggedIn = false;
+let studentTestQuestions = [];
 
-// Panel funksiyalari
-function showTeacherLogin(){ document.getElementById('mainPanel').classList.add('hidden'); document.getElementById('teacherLogin').classList.remove('hidden'); }
-function showStudentPanel(){ document.getElementById('mainPanel').classList.add('hidden'); document.getElementById('studentPanel').classList.remove('hidden'); }
-function backToMain(){ 
-    document.getElementById('teacherLogin').classList.add('hidden'); 
-    document.getElementById('teacherPanel').classList.add('hidden'); 
-    document.getElementById('studentPanel').classList.add('hidden'); 
-    document.getElementById('testPanel').classList.add('hidden'); 
-    document.getElementById('mainPanel').classList.remove('hidden'); 
-    clearInterval(timerInterval); 
+function openModal(modalId){
+    mainPanel.style.display="none";
+    document.getElementById(modalId).style.display="flex";
+    if(modalId==='teacherModal'){
+        if(!teacherLoggedIn){
+            teacherPanel.style.display='none';
+            document.getElementById("password").value="";
+            document.getElementById("password").style.display="block";
+            document.getElementById("teacherButtons").style.display="block";
+        } else {
+            teacherPanel.style.display='block';
+            document.getElementById("password").style.display="none";
+            document.getElementById("teacherButtons").style.display="none";
+        }
+    }
 }
 
-// Enter bilan login
-const teacherUsernameInput = document.getElementById('teacherUsername');
-const teacherPasswordInput = document.getElementById('teacherPassword');
-[teacherUsernameInput, teacherPasswordInput].forEach(input=>{
-    input.addEventListener("keydown", function(e){
-        if(e.key === "Enter") { e.preventDefault(); loginTeacher(); }
+function backToMain(modalId){
+    document.getElementById(modalId).style.display="none";
+    mainPanel.style.display="block";
+}
+
+function checkEnter(e){ if(e.key==="Enter"){ login(); } }
+
+function login(){
+    let p=document.getElementById("password").value;
+    if(p==="Inomov"){
+        alert("Xush kelibsiz, O‘qituvchi!");
+        teacherPanel.style.display="block";
+        teacherLoggedIn = true;
+        document.getElementById("password").style.display="none";
+        document.getElementById("teacherButtons").style.display="none";
+    } else {
+        alert("Noto‘g‘ri parol!");
+    }
+}
+
+window.addEventListener('keydown', function(e){
+    if(e.key==="Escape"){
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(m=>{
+            if(m.style.display==='flex' && !teacherLoggedIn){
+                m.style.display='none';
+                mainPanel.style.display='block';
+            }
+        });
+    }
+});
+
+document.querySelectorAll('.modal').forEach(m=>{
+    m.addEventListener('click', function(e){
+        if(e.target===m && !teacherLoggedIn){
+            m.style.display='none';
+            mainPanel.style.display='block';
+        }
     });
 });
 
-function loginTeacher(){
-    const username = teacherUsernameInput.value.trim();
-    const password = teacherPasswordInput.value.trim();
-    if(username==="Inomov" && password==="Dilmurod"){
-        alert("Kirish muvaffaqiyatli!");
-        document.getElementById('teacherLogin').classList.add('hidden');
-        document.getElementById('teacherPanel').classList.remove('hidden');
-    } else { alert("Login yoki parol noto'g'ri!"); }
+function generateTestAndBack(){
+    generateTestFromTextarea();
+    alert("Test tayyor! Talabalar uni yechishi mumkin.");
+    backToMain('teacherModal');
 }
 
-// Word import
-function importWord(){
-    const fileInput = document.getElementById('wordFile');
-    const file = fileInput.files[0];
-    if(!file){ alert("Word faylni tanlang!"); return; }
-    if(!file.name.endsWith(".docx")) { alert("Faqat .docx formatini tanlang!"); return; }
+function generateTestFromTextarea(){
+    const text = document.getElementById('questionsTextarea').value.trim();
+    if(!text){ alert("Iltimos savollarni yozing!"); return; }
 
-    const reader = new FileReader();
-    reader.onload = function(event){
-        const arrayBuffer = event.target.result;
-        mammoth.extractRawText({arrayBuffer: arrayBuffer})
-        .then(result=>{
-            const text = result.value;
-            const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(l=>l!=="");
-            quizData = [];
-            let editableHTML = "";
-            let currentQIndex = -1;
-
-            lines.forEach(line=>{
-                if(line.startsWith("++++")){
-                    currentQIndex++;
-                    quizData.push({question: line.substring(4).trim(), options: [], answer: []});
-                    editableHTML += `<div class="questionBlock">
-                        <textarea class="questionText" data-index="${currentQIndex}">${line.substring(4).trim()}</textarea>
-                        <div class="optionsContainer" id="optionsContainer${currentQIndex}"></div>
-                    </div>`;
-                } else if(line.startsWith("====#") && currentQIndex>=0){
-                    let optionText = line.substring(5).trim();
-                    quizData[currentQIndex].options.push(optionText);
-                    quizData[currentQIndex].answer.push(quizData[currentQIndex].options.length-1);
-                    editableHTML += `<textarea class="optionText" data-qindex="${currentQIndex}" data-oidx="${quizData[currentQIndex].options.length-1}">${optionText}</textarea>`;
-                } else if(line.startsWith("====") && currentQIndex>=0){
-                    let optionText = line.substring(4).trim();
-                    quizData[currentQIndex].options.push(optionText);
-                    editableHTML += `<textarea class="optionText" data-qindex="${currentQIndex}" data-oidx="${quizData[currentQIndex].options.length-1}">${optionText}</textarea>`;
-                }
-            });
-
-            if(quizData.length === 0){
-                alert("Fayl ichida hech qanday savol topilmadi. Iltimos formatni tekshiring!");
-                return;
-            }
-
-            document.getElementById("editableQuestions").innerHTML = editableHTML;
-            document.getElementById("questionCount").innerText = quizData.length;
-            alert("Savollar muvaffaqiyatli import qilindi va o‘zgartirish mumkin!");
-        }).catch(err=>alert("Faylni o‘qishda xatolik: "+err));
-    };
-    reader.readAsArrayBuffer(file);
-}
-
-// Save Questions
-function saveQuestions(){
-    // Editable textarea dan yangilash
-    document.querySelectorAll(".questionText").forEach(qt=>{
-        const idx = parseInt(qt.dataset.index);
-        quizData[idx].question = qt.value.trim();
-    });
-    document.querySelectorAll(".optionText").forEach(ot=>{
-        const qidx = parseInt(ot.dataset.qindex);
-        const oidx = parseInt(ot.dataset.oidx);
-        quizData[qidx].options[oidx] = ot.value.trim();
+    let blocks = text.split('++++');
+    studentTestQuestions = [];
+    blocks.forEach(b=>{
+        b = b.trim();
+        if(!b) return;
+        let lines = b.split('\n').map(l=>l.trim());
+        let qText = lines[0];
+        let answers = [];
+        let correctIndexes = [];
+        for(let i=1;i<lines.length;i++){
+            if(lines[i].startsWith('====#')) { answers.push(lines[i].substring(5)); correctIndexes.push(answers.length-1); }
+            else if(lines[i].startsWith('====')) answers.push(lines[i].substring(4));
+        }
+        studentTestQuestions.push({question:qText, answers, correctIndexes});
     });
 
-    const tInput = document.getElementById('testDuration').value.trim();
-    if(quizData.length===0 || tInput===""){ alert("Savollar va davomiylikni kiriting!"); return; }
-    duration = parseInt(tInput)*60;
-    telegramLink = document.getElementById('telegramLink').value.trim();
-    alert("Savollar va javoblar saqlandi!");
+    if(document.getElementById('shuffleQuestionsSelect').value==='ha') studentTestQuestions.sort(()=>Math.random()-0.5);
+    if(document.getElementById('shuffleAnswersSelect').value==='ha') studentTestQuestions.forEach(q=>{ q.answers.sort(()=>Math.random()-0.5); });
+    const qCount = parseInt(document.getElementById('questionCount').value);
+    if(qCount < studentTestQuestions.length) studentTestQuestions = studentTestQuestions.slice(0,qCount);
+    if(document.getElementById('questionOrder').value==='random') studentTestQuestions.sort(()=>Math.random()-0.5);
 }
 
-// Wordga eksport
-function exportWord(){
-    let content = "TEST SAVOLLARI\n\n";
-    quizData.forEach((q, idx)=>{
-        content += `${idx+1}. ${q.question}\n`;
-        q.options.forEach((opt,i)=>{
-            if(q.answer.includes(i)) content += `✅ ${opt}\n`;
-            else content += `${opt}\n`;
+function startStudentTest(){
+    const name = document.getElementById('studentName').value.trim();
+    if(!name){ alert("Iltimos ismingizni kiriting!"); return; }
+    const area = document.getElementById('studentTestArea');
+    area.innerHTML = `<h3>Salom, ${name}. Testni yeching:</h3>`;
+    area.style.display = "block";
+
+    let html = '<form id="studentForm"><ol>';
+    studentTestQuestions.forEach((q, idx)=>{
+        html += `<li>${q.question}<ul>`;
+        q.answers.forEach((a,aidx)=>{
+            html += `<li><input type="checkbox" name="q${idx}" value="${aidx}"> ${a}</li>`;
         });
-        content += "\n";
+        html += '</ul></li>';
     });
-    const blob = new Blob([content], {type:"application/msword;charset=utf-8"});
-    saveAs(blob,"Test_savollari.doc");
+    html += '</ol><button type="button" onclick="finishTest()">Yakunlash</button></form>';
+    area.innerHTML += html;
 }
 
-// Shuffle helper
-function shuffleArray(arr){ return arr.sort(()=>Math.random()-0.5); }
-
-// Talaba testi
-function startTest(){
-    const studentName = document.getElementById('studentName').value.trim();
-    if(studentName===""){ alert("Ism Familyani kiriting!"); return; }
-    document.getElementById('studentPanel').classList.add('hidden');
-    document.getElementById('testPanel').classList.remove('hidden');
-    document.getElementById('welcomeStudent').innerText = `Salom, ${studentName}. Testni boshlang!`;
-
-    let tempQuestions = [...quizData];
-    const quizSizeInput = parseInt(document.getElementById('quizSize').value) || tempQuestions.length;
-    const randomSelect = document.getElementById('randomSelect').checked;
-    const shuffleQs = document.getElementById('shuffleQuestions').checked;
-    const shuffleAs = document.getElementById('shuffleAnswers').checked;
-
-    if(randomSelect && quizSizeInput<tempQuestions.length) tempQuestions = shuffleArray(tempQuestions).slice(0,quizSizeInput);
-    else tempQuestions = tempQuestions.slice(0, quizSizeInput);
-
-    if(shuffleQs) tempQuestions = shuffleArray(tempQuestions);
-
-    const container = document.getElementById('questionsContainer');
-    container.innerHTML = "";
-    tempQuestions.forEach((q,index)=>{
-        const div = document.createElement('div'); div.classList.add('question');
-        let opts = [...q.options];
-        if(shuffleAs) opts = shuffleArray(opts);
-        let optsHtml = opts.map(opt=>`<label><input type="checkbox" name="q${index}" value="${opt[0]}"> ${opt}</label><br>`).join("");
-        div.innerHTML = `<p>${index+1}. ${q.question}</p>${optsHtml}`;
-        container.appendChild(div);
+function finishTest(){
+    const form = document.getElementById('studentForm');
+    let correct = 0;
+    studentTestQuestions.forEach((q, idx)=>{
+        const checked = Array.from(form.querySelectorAll(`input[name=q${idx}]:checked`)).map(i=>parseInt(i.value));
+        if(JSON.stringify(checked.sort()) === JSON.stringify(q.correctIndexes.sort())) correct++;
     });
-
-    questions = tempQuestions.map(q=>q.question);
-    options = tempQuestions.map(q=>q.options.join("|"));
-    correctAnswers = tempQuestions.map(q=>q.answer.map(i=>q.options[i][0]));
-
-    startTimer(duration);
-}
-
-// Timer
-function startTimer(seconds){
-    let remaining = seconds;
-    updateTimerDisplay(remaining);
-    timerInterval = setInterval(()=>{
-        remaining--; updateTimerDisplay(remaining);
-        if(remaining<=0){ clearInterval(timerInterval); alert("Vaqt tugadi!"); submitAnswers(); }
-    },1000);
-}
-function updateTimerDisplay(seconds){
-    const min = Math.floor(seconds/60); const sec = seconds%60;
-    document.getElementById('timer').innerText = `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
-}
-
-// Javoblarni yuborish
-function submitAnswers(){
-    clearInterval(timerInterval);
-    let studentAnswers = []; let score=0;
-    for(let i=0;i<questions.length;i++){
-        const checkboxes = document.getElementsByName(`q${i}`);
-        let selected = [];
-        checkboxes.forEach(cb=>{if(cb.checked) selected.push(cb.value);});
-        studentAnswers.push(selected.length?selected.join(","):"-");
-        const correctSet = new Set(correctAnswers[i]);
-        const selectedSet = new Set(selected);
-        if(selectedSet.size === correctSet.size && [...selectedSet].every(v=>correctSet.has(v))) score++;
-    }
-    if(telegramLink===""){ alert("Telegram havolasi saqlanmagan."); return; }
-    const message = encodeURIComponent(`Talaba javoblari: ${studentAnswers.join(", ")}\nTo'g'ri javoblar soni: ${score} / ${questions.length}`);
-    const url = telegramLink + message;
-    window.open(url,"_blank");
-    alert("Javoblar Telegramga yuborish uchun ochildi!");
+    const percent = Math.round((correct/studentTestQuestions.length)*100);
+    const area = document.getElementById('studentTestArea');
+    area.innerHTML += `<h3>Natija: ${percent}%</h3><p>To'g'ri javoblar: ${correct}/${studentTestQuestions.length}</p>`;
 }
 </script>
-
-<!-- IKINCHI KOD: GTI va NS -->
-<!DOCTYPE html>
-<html lang="uz">
-<head>
-<meta charset="UTF-8">
-<title>GTI va NS</title>
-<style>
-    body { font-family:'Segoe UI','Roboto','Arial',sans-serif; background:#f4f6f8; margin:0; padding:0; line-height:1.6; color:#333; }
-    header { background:#4a90e2; color:white; padding:20px; text-align:center; font-size:1.7em; font-weight:bold; box-shadow:0 2px 5px rgba(0,0,0,0.2);}    
-    main { padding:25px; max-width:950px; margin:auto; }
-    label { font-weight:bold; margin-top:12px; display:block; font-size:1.05em;}
-    select, input, textarea, button { width:100%; margin-top:6px; margin-bottom:12px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1em; box-sizing:border-box; font-family:'Segoe UI','Roboto','Arial',sans-serif; }
-    button { background-color:#4a90e2; color:white; border:none; cursor:pointer; font-weight:bold; transition:0.3s; font-size:1.05em; }
-    button:hover { background-color:#357ab8; }
-    textarea { min-height:180px; resize:vertical; font-size:1em; line-height:1.5; }
-    .modal { display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; overflow:auto; background-color: rgba(0,0,0,0.6); animation: fadeIn 0.4s; }
-    .modal-content { background-color:#fff; margin:60px auto; padding:30px; border-radius:15px; border:1px solid #888; width:90%; max-width:950px; max-height:80%; overflow-y:auto; white-space:pre-wrap; font-family:'Segoe UI','Roboto','Arial',monospace; box-shadow:0 8px 25px rgba(0,0,0,0.3); animation: slideDown 0.4s ease; font-size:1em; line-height:1.5; }
-    @keyframes slideDown { from {transform:translateY(-50px); opacity:0;} to {transform:translateY(0); opacity:1;} }
-    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
-    .close { color:#444; float:right; font-size:32px; font-weight:bold; cursor:pointer; transition:0.2s;}
-    .close:hover { color:#000; }
-    h2 { color:#333; margin-bottom:15px; font-size:1.3em; }
-    .section { background:#fff; padding:25px; margin-bottom:25px; border-radius:12px; box-shadow:0 3px 8px rgba(0,0,0,0.1); }
-    .question { background-color:#e6f0ff; margin-bottom:10px; padding:10px; border-radius:6px; transition:0.3s; font-size:1.05em; }
-    .answer { background-color:#f0f0f0; margin-left:20px; padding:6px; border-radius:4px; margin-bottom:4px; font-size:1em; }
-    .keyword { color:green; font-weight:bold; }
-    .repeat { color:red; font-weight:bold; }
-    #errorDiv { background:#fff3cd; border:1px solid #ffeeba; padding:15px; border-radius:8px; margin-top:15px; color:#856404; font-size:1em; }
-
-    .clickable-error { cursor:pointer; color:#d9534f; text-decoration:underline; }
-    .highlight-question { background: yellow !important; }
-</style>
-
-<header>GTI va NS kafedrasi</header>
-<main>
-    <div class="section">
-        <h2>Sozlamalar</h2>
-        <label>Raqamlash:</label>
-        <select id="numbering"><option value="yes">Ha</option><option value="no">Yo‘q</option></select>
-
-        <label>Variantlar (a, b, c…)</label>
-        <select id="abcMode"><option value="yes">Ha</option><option value="no">Yo‘q</option></select>
-
-        <label>Savollar orasida bo‘sh qator qo‘yilsinmi?</label>
-        <select id="addEnter"><option value="yes">Ha</option><option value="no">Yo‘q</option></select>
-
-        <label>Savol oldidagi belgi:</label>
-        <input id="blockPrefix" value="++++">
-
-        <label>To'g'ri javob oldidagi belgi:</label>
-        <input id="firstPrefix" value="====#">
-
-        <label>Noto'g'ri javob oldidagi belgi:</label>
-        <input id="otherPrefix" value="====">
-    </div>
-
-    <div class="section">
-        <h2>Savollarni kiriting</h2>
-        <textarea id="inputText" placeholder="Savollarni kiriting..."></textarea>
-        <button onclick="showResult()">Natijani Ko‘rish</button>
-        <div id="errorDiv"></div>
-    </div>
-</main>
-
-<div id="resultModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <div id="modalText"></div>
-  </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script>
-// Bu yerga ikkinchi koddagi barcha JS funksiyalar qo‘shiladi, xuddi aslida berilganidek.
-// ... [ikkinchi koddagi JS] ...
-</script>
-
-<div style="padding:25px; max-width:950px; margin:auto;">
-    <button onclick="downloadResult('txt')">Yuklab olish (TXT)</button>
-    <button onclick="downloadResult('doc')">Yuklab olish (DOC)</button>
-    <button onclick="downloadResult('xlsx')">Yuklab olish (Excel)</button>
-</div>
 
 </body>
 </html>
